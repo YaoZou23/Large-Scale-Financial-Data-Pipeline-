@@ -1,0 +1,59 @@
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
+    container_name: namenode
+    ports:
+      - 9870:9870
+      - 8020:8020
+    environment:
+      - CLUSTER_NAME=test
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    volumes:
+      - ./data/namenode:/hadoop/dfs/name
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
+    container_name: datanode
+    ports:
+      - 9864:9864
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+      CORE_CONF_fs_defaultFS: "hdfs://namenode:8020"
+    volumes:
+      - ./data/datanode:/hadoop/dfs/data
+
+  hive-mysql:
+    image: mysql:8.0
+    platform: linux/amd64
+    container_name: hive-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: metastore
+      MYSQL_USER: hive
+      MYSQL_PASSWORD: hive123
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - 3307:3306
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    platform: linux/amd64
+    container_name: hive-server
+    environment:
+      SERVICE_PRECONDITION: "hive-mysql:3306 namenode:8020"
+      CORE_CONF_fs_defaultFS: "hdfs://namenode:8020"
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionURL: "jdbc:mysql://hive-mysql:3306/metastore?createDatabaseIfNotExist=true"
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionDriverName: "com.mysql.cj.jdbc.Driver"
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionUserName: "hive"
+      HIVE_SITE_CONF_javax_jdo_option_ConnectionPassword: "hive123"
+      HIVE_SITE_CONF_datanucleus_autoCreateSchema: "true"
+    volumes:
+      - ./jars/mysql-connector-j-8.0.33.jar:/opt/hive/lib/mysql-connector-j-8.0.33.jar:ro
+    ports:
+      - 10000:10000
+      - 10002:10002
+    depends_on:
+      - hive-mysql
