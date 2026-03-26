@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 
 # Kimi API 配置
-KIMI_API_KEY = os.getenv("KIMI_API_KEY", "sk-D0fxRM2rrN4QuLWAhBc1ZQdyFEPxdk6bgpPfkzIzTrSF12IE")
+KIMI_API_KEY = os.getenv("KIMI_API_KEY", "")
 KIMI_API_URL = "https://api.moonshot.cn/v1/chat/completions"
 
 # 读取股票数据

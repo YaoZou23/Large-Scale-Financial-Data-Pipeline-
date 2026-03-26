@@ -1,0 +1,49 @@
+# Data files
+*.csv
+*.parquet
+*.db
+*.sqlite
+data/
+stocks_data/
+stock_data/
+*.xlsx
+*.xls
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+
+# ML models (large files)
+*.pth
+*.pt
+*.h5
+*.pkl
+*.pickle
+*.pth.tar
+
+# Images (generated)
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Reports
+report/
+*.json
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
